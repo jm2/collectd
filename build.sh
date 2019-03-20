@@ -57,10 +57,10 @@ build()
     && autoconf
 }
 
-build_cygwin()
+build_mingw()
 {
-    echo "Building for Cygwin..."
-    check_for_application aclocal autoconf autoheader automake bison flex git make pkg-config x86_64-w64-mingw32-gcc
+    echo "Building for MinGW..."
+    check_for_application aclocal autoconf autoheader automake bison flex git make pkg-config gcc
     setup_libtool
 
     set -e
@@ -76,10 +76,10 @@ build_cygwin()
 
     echo "Installing collectd to ${INSTALL_DIR}."
     TOP_SRCDIR="$(pwd)"
-    MINGW_ROOT="$(x86_64-w64-mingw32-gcc -print-sysroot)/mingw"
+    MINGW_ROOT="/"
     export GNULIB_DIR="${TOP_SRCDIR}/gnulib/build/gllib"
 
-    export CC="x86_64-w64-mingw32-gcc"
+    export CC="gcc"
 
     if [ -d "${TOP_SRCDIR}/gnulib/build" ]; then
         echo "Assuming that gnulib is already built, because gnulib/build exists."
@@ -113,7 +113,7 @@ build_cygwin()
 
         cd ${TOP_SRCDIR}/gnulib/build
         ./configure --host="mingw32" LIBS="-lws2_32 -lpthread"
-        make 
+        make
         cd gllib
 
         # We have to rebuild libgnu.a to get the list of *.o files to build a dll later
@@ -121,7 +121,7 @@ build_cygwin()
         OBJECT_LIST=`make V=1 | grep "ar" | cut -d' ' -f4-`
         $CC -shared -o libgnu.dll $OBJECT_LIST -lws2_32 -lpthread
         rm libgnu.a # get rid of it, to use libgnu.dll
-	fi
+    fi
     cd "${TOP_SRCDIR}"
 
     set -x
@@ -165,9 +165,8 @@ build_cygwin()
 }
 
 os_name="$(uname)"
-if test "${os_name#CYGWIN}" != "$os_name"; then
-    build_cygwin
+if test "${os_name#CYGWIN}" != "$os_name" || test "${os_name#MSYS}" != "$os_name"; then
+    build_mingw
 else
     build
 fi
-
