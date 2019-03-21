@@ -60,6 +60,15 @@ build()
 build_mingw()
 {
     echo "Building for MinGW..."
+
+    if [ -d "/mingw64" ]; then
+      PATH="/mingw64/bin:$PATH"
+    elif [ -d "/mingw32" ]; then
+      PATH="/mingw32/bin:$PATH"
+    elif [ -d "/mingw" ]; then
+      PATH="/mingw/bin:$PATH"
+    fi
+
     check_for_application aclocal autoconf autoheader automake bison flex git make pkg-config x86_64-w64-mingw32-gcc
     setup_libtool
 
@@ -76,11 +85,15 @@ build_mingw()
 
     echo "Installing collectd to ${INSTALL_DIR}."
     TOP_SRCDIR="$(pwd)"
+
     if [ -d "$(x86_64-w64-mingw32-gcc -print-sysroot)/mingw64" ]; then
       MINGW_ROOT="$(x86_64-w64-mingw32-gcc -print-sysroot)/mingw64"
+    elif [ -d "$(x86_64-w64-mingw32-gcc -print-sysroot)/mingw32" ]; then
+      MINGW_ROOT="$(x86_64-w64-mingw32-gcc -print-sysroot)/mingw32"
     else
       MINGW_ROOT="$(x86_64-w64-mingw32-gcc -print-sysroot)/mingw"
     fi
+
     export GNULIB_DIR="${TOP_SRCDIR}/gnulib/build/gllib"
 
     export CC="x86_64-w64-mingw32-gcc"
