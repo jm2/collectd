@@ -60,7 +60,7 @@ build()
 build_mingw()
 {
     echo "Building for MinGW..."
-    check_for_application aclocal autoconf autoheader automake bison flex git make pkg-config gcc
+    check_for_application aclocal autoconf autoheader automake bison flex git make pkg-config x86_64-w64-mingw32-gcc
     setup_libtool
 
     set -e
@@ -76,10 +76,14 @@ build_mingw()
 
     echo "Installing collectd to ${INSTALL_DIR}."
     TOP_SRCDIR="$(pwd)"
-    MINGW_ROOT="/"
+    if [ -d "$(x86_64-w64-mingw32-gcc -print-sysroot)/mingw64" ]; then
+      MINGW_ROOT="$(x86_64-w64-mingw32-gcc -print-sysroot)/mingw64"
+    else
+      MINGW_ROOT="$(x86_64-w64-mingw32-gcc -print-sysroot)/mingw"
+    fi
     export GNULIB_DIR="${TOP_SRCDIR}/gnulib/build/gllib"
 
-    export CC="gcc"
+    export CC="x86_64-w64-mingw32-gcc"
 
     if [ -d "${TOP_SRCDIR}/gnulib/build" ]; then
         echo "Assuming that gnulib is already built, because gnulib/build exists."
