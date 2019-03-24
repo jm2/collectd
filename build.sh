@@ -61,14 +61,6 @@ build_mingw()
 {
     echo "Building for MinGW..."
 
-    if [ -d "/mingw64" ]; then
-      PATH="/mingw64/bin:$PATH"
-    elif [ -d "/mingw32" ]; then
-      PATH="/mingw32/bin:$PATH"
-    elif [ -d "/mingw" ]; then
-      PATH="/mingw/bin:$PATH"
-    fi
-
     check_for_application aclocal ar autoconf autoheader automake bison flex git make pkg-config x86_64-w64-mingw32-gcc
     setup_libtool
 
@@ -182,7 +174,7 @@ build_mingw()
 }
 
 os_name="$(uname)"
-if test "${os_name#CYGWIN}" != "$os_name" || test "${os_name#MSYS}" != "$os_name"; then
+if test "${os_name#CYGWIN}" != "$os_name" || test "${os_name#MINGW}" != "$os_name"; then
     build_mingw
 else
     build
