@@ -1060,6 +1060,7 @@ collectd.
 
 You will need to install the following Cygwin packages:
 - automake
+- binutils
 - bison
 - flex
 - git

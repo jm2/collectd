@@ -69,7 +69,7 @@ build_mingw()
       PATH="/mingw/bin:$PATH"
     fi
 
-    check_for_application aclocal autoconf autoheader automake bison flex git make pkg-config x86_64-w64-mingw32-gcc
+    check_for_application aclocal ar autoconf autoheader automake bison flex git make pkg-config x86_64-w64-mingw32-gcc
     setup_libtool
 
     set -e
